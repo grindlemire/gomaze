@@ -33,7 +33,8 @@ func (d Direction) String() string {
 	}
 }
 
-func (d Direction) getOpposite() (other Direction) {
+// GetOpposite gets the opposite direction
+func (d Direction) GetOpposite() (other Direction) {
 	switch d {
 	case Up:
 		return Down
@@ -70,7 +71,7 @@ type Cell struct {
 	Y           int
 	Connections map[Direction]Connection
 
-	visited bool
+	Visited bool
 }
 
 // NewCell creates a new cell

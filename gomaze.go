@@ -7,6 +7,7 @@ import (
 
 	"github.com/grindlemire/gomaze/pkg/board"
 	"github.com/grindlemire/gomaze/pkg/encode"
+	"github.com/grindlemire/gomaze/pkg/traverse/dfs"
 	"github.com/grindlemire/log"
 )
 
@@ -33,13 +34,15 @@ func main() {
 	}
 	log.Infof("Width: %d | Height: %d", opts.Width, opts.Height)
 	b := board.New(opts.Width, opts.Height)
+	b = dfs.CreateEdges(b)
+	path := dfs.Solve(b)
 
 	p, err := encode.NewPNG("out.png")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = p.Encode(b.Cells)
+	err = p.Encode(b.Entrance, b.Exit, b.Cells, path)
 	if err != nil {
 		log.Fatal(err)
 	}

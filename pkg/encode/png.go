@@ -31,51 +31,67 @@ func NewPNG(name string) (p PNG, err error) {
 }
 
 const cellWidth = 20
+const horizontalPadding = cellWidth / 2
+const verticalPadding = cellWidth / 2
 
 // Encode encodes cells to a png
-func (p PNG) Encode(cells [][]*board.Cell) (err error) {
-	img := image.NewNRGBA(image.Rect(0, 0, cellWidth*len(cells[0])+2, cellWidth*len(cells)+2))
+func (p PNG) Encode(entrance, exit *board.Cell, cells [][]*board.Cell, path []*board.Cell) (err error) {
+	width := len(cells[0])
+	height := len(cells)
+	img := image.NewNRGBA(image.Rect(0, 0, cellWidth*width+horizontalPadding, cellWidth*height+verticalPadding))
 
+	pathCache := map[string]struct{}{}
+	for _, cell := range path {
+		pathCache[cell.ID] = struct{}{}
+	}
+
+	// loop over cells
 	for y := 0; y < len(cells); y++ {
 		for x := 0; x < len(cells[0]); x++ {
 			cell := cells[y][x]
 
+			fillColor := color.NRGBA{R: 255, G: 255, B: 255, A: 255}
+			_, inPath := pathCache[cell.ID]
+			if inPath {
+				fillColor = color.NRGBA{R: 0, G: 0, B: 255, A: 255}
+			}
+
+			if cell.ID == entrance.ID {
+				fillColor = color.NRGBA{R: 255, G: 0, B: 0, A: 255}
+			}
+
+			if cell.ID == exit.ID {
+				fillColor = color.NRGBA{R: 0, G: 255, B: 0, A: 255}
+			}
+
+			// create a square for each cell
 			for i := -cellWidth / 2; i <= cellWidth/2; i++ {
 				for j := -cellWidth / 2; j <= cellWidth/2; j++ {
+					cellFill := fillColor
 					// calculate the pixel we are looking at
-					pX := x*cellWidth + i + 1
-					pY := y*cellWidth + j + 1
+					pX := x*cellWidth + i + horizontalPadding/2
+					pY := y*cellWidth + j + verticalPadding/2
 
 					_, hasLeft := cell.Connections[board.Left]
 					_, hasRight := cell.Connections[board.Right]
 					_, hasUp := cell.Connections[board.Up]
 					_, hasDown := cell.Connections[board.Down]
-					var r, g, b, a uint8 = 255, 255, 255, 255
 
 					// if we are on an edge and there is no connection, make it black
 					if (i == -cellWidth/2 && !hasLeft) ||
 						(i == cellWidth/2 && !hasRight) ||
 						(j == -cellWidth/2 && !hasUp) ||
 						(j == cellWidth/2 && !hasDown) ||
-						(math.Abs(float64(i)) == cellWidth/2 && math.Abs(float64(j)) == cellWidth/2) { // This is the case you are in the corner
-						r, g, b = 0, 0, 0
+						(math.Abs(float64(i)) == cellWidth/2 && math.Abs(float64(j)) == cellWidth/2) && // Fill in the corners
+							(cell.ID != entrance.ID) && (cell.ID != exit.ID) { // Don't make walls for the entrance or exit
+						cellFill = color.NRGBA{R: 0, G: 0, B: 0, A: 255}
 					}
 
-					img.Set(pX, pY, color.NRGBA{
-						R: r,
-						G: g,
-						B: b,
-						A: a,
-					})
+					img.Set(pX, pY, cellFill)
 				}
 			}
 		}
 	}
 
-	// img.Set(0, 0, color.NRGBA{R: 255, G: 0, B: 0, A: 255})
-	// img.Set(1, 0, color.NRGBA{R: 0, G: 255, B: 0, A: 255})
-	// img.Set(0, 1, color.NRGBA{R: 0, G: 0, B: 255, A: 255})
-
 	return png.Encode(p.File, img)
-
 }
