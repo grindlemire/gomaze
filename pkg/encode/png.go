@@ -23,8 +23,6 @@ func NewPNG(b board.Board) (p PNG, err error) {
 	p = PNG{
 		img: image.NewNRGBA(
 			image.Rect(0, 0,
-				// cellWidth*width+horizontalPadding,
-				// cellWidth*height+verticalPadding,
 				cellWidth*(width+1),
 				cellWidth*(height+1),
 			),
@@ -87,8 +85,8 @@ func (p *PNG) drawPathTo(d board.Direction, cell *board.Cell) {
 
 	for x := xStart; x <= xEnd; x++ {
 		for y := yStart; y <= yEnd; y++ {
-			pX := (cell.X+1)*cellWidth + x //+ horizontalPadding/2
-			pY := (cell.Y+1)*cellWidth + y //+ verticalPadding/2
+			pX := (cell.X+1)*cellWidth + x
+			pY := (cell.Y+1)*cellWidth + y
 			p.img.Set(pX, pY, color.NRGBA{R: 0, G: 0, B: 255, A: 255})
 		}
 	}
@@ -144,8 +142,8 @@ func (p *PNG) EncodeBoard() (err error) {
 				for j := -cellWidth / 2; j <= cellWidth/2; j++ {
 					cellFill := fillColor
 					// calculate the pixel we are looking at
-					pX := (x+1)*cellWidth + i //+ horizontalPadding/2
-					pY := (y+1)*cellWidth + j //+ verticalPadding/2
+					pX := (x+1)*cellWidth + i
+					pY := (y+1)*cellWidth + j
 
 					_, hasLeft := cell.Connections[board.Left]
 					_, hasRight := cell.Connections[board.Right]
