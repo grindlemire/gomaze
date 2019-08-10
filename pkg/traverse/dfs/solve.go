@@ -22,7 +22,7 @@ func traverse(current, exit *board.Cell, cells [][]*board.Cell, visited map[stri
 
 	// if no unvisited neighbors then return
 	if len(unvisitedNeighbors) == 0 {
-		return path, false
+		return append(path, current), false
 	}
 
 	for _, next := range unvisitedNeighbors {

@@ -13,9 +13,9 @@ import (
 
 // Opts ...
 type Opts struct {
-	Height int `          long:"height" default:"10"      description:"height of the maze"`
-	Width  int `          long:"width"  default:"20"      description:"width of the maze"`
-	File   int `short:"f" long:"file"   default:"out.png" description:"the name of the file to write out"`
+	Height int    `          long:"height" default:"10"      description:"height of the maze"`
+	Width  int    `          long:"width"  default:"20"      description:"width of the maze"`
+	File   string `short:"f" long:"file"   default:"out.png" description:"the name of the file to write out"`
 }
 
 var opts Opts
@@ -37,12 +37,22 @@ func main() {
 	b = dfs.CreateEdges(b)
 	path := dfs.Solve(b)
 
-	p, err := encode.NewPNG("out.png")
+	p, err := encode.NewPNG(b)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = p.Encode(b.Entrance, b.Exit, b.Cells, path)
+	err = p.EncodeBoard()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = p.EncodeSolution(path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = p.Save(opts.File)
 	if err != nil {
 		log.Fatal(err)
 	}

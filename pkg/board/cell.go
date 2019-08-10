@@ -16,6 +16,7 @@ const (
 	Down
 	Left
 	Right
+	None
 )
 
 func (d Direction) String() string {
@@ -28,6 +29,8 @@ func (d Direction) String() string {
 		return "Left"
 	case Right:
 		return "Right"
+	case None:
+		return "None"
 	default:
 		panic("invalid direction in print")
 	}
@@ -44,6 +47,8 @@ func (d Direction) GetOpposite() (other Direction) {
 		return Right
 	case Right:
 		return Left
+	case None:
+		return None
 	default:
 		panic("invalid direction somehow")
 	}
