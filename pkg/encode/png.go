@@ -23,8 +23,8 @@ func NewPNG(b board.Board) (p PNG, err error) {
 	p = PNG{
 		img: image.NewNRGBA(
 			image.Rect(0, 0,
-				cellWidth*(width+1),
-				cellWidth*(height+1),
+				CellWidth*(width+1),
+				CellWidth*(height+1),
 			),
 		),
 		b: b,
@@ -43,9 +43,11 @@ func (p PNG) Save(name string) (err error) {
 	return png.Encode(f, p.img)
 }
 
-const cellWidth = 28
-const horizontalPadding = cellWidth / 2
-const verticalPadding = cellWidth / 2
+// CellWidth ...
+const CellWidth = 28
+
+// const horizontalPadding = CellWidth / 2
+// const verticalPadding = CellWidth / 2
 
 // EncodeSolution encodes a solution to the png
 func (p *PNG) EncodeSolution(path []*board.Cell) (err error) {
@@ -57,36 +59,36 @@ func (p *PNG) drawPathTo(d board.Direction, cell *board.Cell) {
 	switch d {
 	case board.Up:
 		// draw upwards
-		yStart = -cellWidth / 2
-		yEnd = cellWidth / 10
-		xStart = -cellWidth / 10
-		xEnd = cellWidth / 10
+		yStart = -CellWidth / 2
+		yEnd = CellWidth / 10
+		xStart = -CellWidth / 10
+		xEnd = CellWidth / 10
 	case board.Down:
 		// draw down
-		yStart = -cellWidth / 10
-		yEnd = cellWidth / 2
-		xStart = -cellWidth / 10
-		xEnd = cellWidth / 10
+		yStart = -CellWidth / 10
+		yEnd = CellWidth / 2
+		xStart = -CellWidth / 10
+		xEnd = CellWidth / 10
 	case board.Left:
 		// draw left
-		yStart = -cellWidth / 10
-		yEnd = cellWidth / 10
-		xStart = -cellWidth / 2
-		xEnd = cellWidth / 10
+		yStart = -CellWidth / 10
+		yEnd = CellWidth / 10
+		xStart = -CellWidth / 2
+		xEnd = CellWidth / 10
 	case board.Right:
 		// draw right
-		yStart = -cellWidth / 10
-		yEnd = cellWidth / 10
-		xStart = -cellWidth / 10
-		xEnd = cellWidth / 2
+		yStart = -CellWidth / 10
+		yEnd = CellWidth / 10
+		xStart = -CellWidth / 10
+		xEnd = CellWidth / 2
 	case board.None:
 		return
 	}
 
 	for x := xStart; x <= xEnd; x++ {
 		for y := yStart; y <= yEnd; y++ {
-			pX := (cell.X+1)*cellWidth + x
-			pY := (cell.Y+1)*cellWidth + y
+			pX := (cell.X+1)*CellWidth + x
+			pY := (cell.Y+1)*CellWidth + y
 			p.img.Set(pX, pY, color.NRGBA{R: 0, G: 0, B: 255, A: 255})
 		}
 	}
@@ -138,12 +140,12 @@ func (p *PNG) EncodeBoard() (err error) {
 			}
 
 			// create a square for each cell
-			for i := -cellWidth / 2; i <= cellWidth/2; i++ {
-				for j := -cellWidth / 2; j <= cellWidth/2; j++ {
+			for i := -CellWidth / 2; i <= CellWidth/2; i++ {
+				for j := -CellWidth / 2; j <= CellWidth/2; j++ {
 					cellFill := fillColor
 					// calculate the pixel we are looking at
-					pX := (x+1)*cellWidth + i
-					pY := (y+1)*cellWidth + j
+					pX := (x+1)*CellWidth + i
+					pY := (y+1)*CellWidth + j
 
 					_, hasLeft := cell.Connections[board.Left]
 					_, hasRight := cell.Connections[board.Right]
@@ -151,11 +153,11 @@ func (p *PNG) EncodeBoard() (err error) {
 					_, hasDown := cell.Connections[board.Down]
 
 					// if we are on an edge and there is no connection, make it black
-					if (i == -cellWidth/2 && !hasLeft) ||
-						(i == cellWidth/2 && !hasRight) ||
-						(j == -cellWidth/2 && !hasUp) ||
-						(j == cellWidth/2 && !hasDown) ||
-						(math.Abs(float64(i)) == cellWidth/2 && math.Abs(float64(j)) == cellWidth/2) && // Fill in the corners
+					if (i == -CellWidth/2 && !hasLeft) ||
+						(i == CellWidth/2 && !hasRight) ||
+						(j == -CellWidth/2 && !hasUp) ||
+						(j == CellWidth/2 && !hasDown) ||
+						(math.Abs(float64(i)) == CellWidth/2 && math.Abs(float64(j)) == CellWidth/2) && // Fill in the corners
 							(cell.ID != entrance.ID) && (cell.ID != exit.ID) { // Don't make walls for the entrance or exit
 						cellFill = color.NRGBA{R: 0, G: 0, B: 0, A: 255}
 					}

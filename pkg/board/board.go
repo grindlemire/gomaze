@@ -2,6 +2,7 @@ package board
 
 import (
 	"fmt"
+	"image"
 )
 
 // Board is the maze board
@@ -9,10 +10,13 @@ type Board struct {
 	Entrance *Cell
 	Exit     *Cell
 	Cells    [][]*Cell
+
+	CellWidth int
+	Bias      image.Image
 }
 
 // New creates a new fully initialized board
-func New(width, height int) (b Board) {
+func New(width, height, cellWidth int, bias image.Image) (b Board) {
 	cells := [][]*Cell{}
 	for i := 0; i < height; i++ {
 		row := []*Cell{}
@@ -25,9 +29,11 @@ func New(width, height int) (b Board) {
 	entrance := cells[0][0]
 	exit := cells[height-1][width-1]
 	return Board{
-		Entrance: entrance,
-		Exit:     exit,
-		Cells:    cells,
+		Entrance:  entrance,
+		Exit:      exit,
+		Cells:     cells,
+		CellWidth: cellWidth,
+		Bias:      bias,
 	}
 }
 
