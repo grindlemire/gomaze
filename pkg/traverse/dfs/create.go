@@ -109,8 +109,8 @@ func (b byBias) Less(i, j int) bool {
 	for i := -b.cellWidth / 2; i <= b.cellWidth/2; i++ {
 		for j := -b.cellWidth / 2; j <= b.cellWidth/2; j++ {
 			fcbias := b.bias.At((first.X+1)*b.cellWidth+i, (first.Y+1)*b.cellWidth+j)
-			fr, _, _, _ := fcbias.RGBA()
-			favg += int(uint8(fr))
+			fr, fb, fc, _ := fcbias.RGBA()
+			favg += int(uint8(fr)) + int(uint8(fb)) + int(uint8(fc))
 		}
 	}
 
@@ -119,8 +119,8 @@ func (b byBias) Less(i, j int) bool {
 	for i := -b.cellWidth / 2; i <= b.cellWidth/2; i++ {
 		for j := -b.cellWidth / 2; j <= b.cellWidth/2; j++ {
 			scbias := b.bias.At((second.X+1)*b.cellWidth+i, (second.Y+1)*b.cellWidth+j)
-			sr, _, _, _ := scbias.RGBA()
-			savg += int(uint8(sr))
+			sr, sb, sc, _ := scbias.RGBA()
+			savg += int(uint8(sr)) + int(uint8(sb)) + int(uint8(sc))
 		}
 	}
 
